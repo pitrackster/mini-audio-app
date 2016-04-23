@@ -1,0 +1,7 @@
+<div class= "row">
+  <div class="col-md-12">
+    <h4>OSC - {{id}}</h4>
+    <input type="range" (change)="updateWaveform($event)" [(ngModel)]="waveform" min="1" max="4" step="1"/>
+    <input type="range" (input)="updateVolume($event)" [(ngModel)]="gain" min="0" max="1" step="0.1"/>
+  </div>
+</div>
