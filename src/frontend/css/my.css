@@ -9,3 +9,26 @@
 .ng-touched.ng-invalid:focus {
   border-left: 5px solid #a94442; /* red */
 }
+
+/*input[type=range][orient=vertical]
+{
+
+    -webkit-appearance: slider-vertical;
+    width: 8px;
+    height: 175px;
+    padding: 0 5px;
+}*/
+
+.oscillator-waveform-slider, .oscillator-volume-slider{
+  -webkit-appearance: slider-vertical; /* WebKit */
+  width: 8px;
+  height: 55px;
+  padding: 0 5px;
+}
+
+.vertical-slider-sm{
+  -webkit-appearance: slider-vertical; /* WebKit */
+  width: 8px;
+  height: 55px;
+  padding: 0 5px;
+}

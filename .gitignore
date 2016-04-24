@@ -1,1 +1,3 @@
 node_modules
+src/frontend/app/**/*.js
+src/frontend/app/**/*.map

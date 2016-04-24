@@ -35,7 +35,7 @@ export class SimpleSynth implements OnInit {
     //console.log(this.osc);
   }
 
-  noteOn(note: any, output:GainNode) {
+  noteOn(note: any) {
     console.log('simple synth play note called ' + note);
     console.log(this.notes);
 

@@ -34,7 +34,7 @@ System.register(['angular2/core', '../oscillator/oscillator'], function(exports_
                     //console.log(this.oscComponents.length);
                     //console.log(this.osc);
                 };
-                SimpleSynth.prototype.noteOn = function (note, output) {
+                SimpleSynth.prototype.noteOn = function (note) {
                     console.log('simple synth play note called ' + note);
                     console.log(this.notes);
                     for (var _i = 0, _a = this.oscComponents.toArray(); _i < _a.length; _i++) {

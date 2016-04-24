@@ -1,4 +1,4 @@
-System.register(['angular2/core'], function(exports_1, context_1) {
+System.register(['angular2/core', '../envelope/envelope'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,12 +10,15 @@ System.register(['angular2/core'], function(exports_1, context_1) {
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1;
+    var core_1, envelope_1;
     var Oscillator;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
+            },
+            function (envelope_1_1) {
+                envelope_1 = envelope_1_1;
             }],
         execute: function() {
             Oscillator = (function () {
@@ -28,12 +31,6 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                     this.waveform = "2";
                     this.gain = 1; // @TODO should be 1/nb osc-comp
                     // is this the true ADSR schema ? I doubt
-                    this.ENV = {
-                        attack: 2,
-                        decay: 0.3,
-                        sustain: 0,
-                        release: 2 // seconds
-                    };
                 };
                 Oscillator.prototype.getWaveformFromNumber = function (value) {
                     switch (value) {
@@ -72,20 +69,22 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                     this.osc.frequency.value = freq;
                     this.osc.type = this.getWaveformFromNumber(this.waveform);
                     this.osc.start(this.ac.currentTime);
-                    this.osc.connect(this.vca);
                     // Silence oscillator gain
                     this.vca.gain.setValueAtTime(0, this.ac.currentTime);
+                    this.vca.gain.cancelScheduledValues(this.ac.currentTime);
                     // ATTACK
                     this.vca.gain.linearRampToValueAtTime(this.gain, this.ac.currentTime + this.ENV.attack);
+                    var now = this.ac.currentTime + this.ENV.attack;
                     // SUSTAIN
                     //this.vca.gain.cancelScheduledValues(this.ac.currentTime);
-                    // once attack linear ramp is terminated (if time = this.ac.currentTime + this.ENV.attack + this.ENV.sustain) go to decay gain -> but does not work...
-                    this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.decay, this.ac.currentTime + this.ENV.attack + this.ENV.sustain);
+                    // once attack linear ramp is terminated (if time = this.ac.currentTime + this.ENV.attack + this.ENV.sustain) go to sustain gain -> but does not work...
+                    this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, now + this.ENV.decay);
+                    this.osc.connect(this.vca);
                 };
                 Oscillator.prototype.stop = function (output) {
                     console.log('stop');
                     // Clear previous envelope values -> make the RELEASE unefficient if i use the SUSTAIN linearRampToValueAtTime
-                    // this.vca.gain.cancelScheduledValues(this.ac.currentTime);
+                    this.vca.gain.cancelScheduledValues(this.ac.currentTime);
                     // RELEASE
                     console.log(this.ac.currentTime + this.ENV.release);
                     console.log(this.ac.currentTime);
@@ -104,7 +103,6 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                     }.bind(this), this.ENV.release * 1000);
                 };
                 __decorate([
-                    // osc ADSR
                     core_1.Input(), 
                     __metadata('design:type', AudioContext)
                 ], Oscillator.prototype, "ac", void 0);
@@ -113,14 +111,16 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                     __metadata('design:type', String)
                 ], Oscillator.prototype, "id", void 0);
                 __decorate([
-                    core_1.Input(), 
-                    __metadata('design:type', GainNode)
-                ], Oscillator.prototype, "synthOut", void 0);
+                    core_1.ViewChild(envelope_1.Envelope), 
+                    __metadata('design:type', envelope_1.Envelope)
+                ], Oscillator.prototype, "ENV", void 0);
                 Oscillator = __decorate([
                     core_1.Component({
                         selector: 'osc-comp',
                         templateUrl: './app/components/oscillator/oscillator.html',
-                        directives: []
+                        directives: [
+                            envelope_1.Envelope
+                        ]
                     }), 
                     __metadata('design:paramtypes', [])
                 ], Oscillator);
