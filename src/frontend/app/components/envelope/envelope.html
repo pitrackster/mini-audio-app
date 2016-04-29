@@ -1,14 +1,14 @@
 <div class="row">
   <div class="col-md-3">
-    <input type="range" [(ngModel)]="attack" title="Attack {{attack}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="10">
+    <input type="range" (change)="toNumber()" [(ngModel)]="attack" title="Attack" class="vertical-slider-sm" step="1" min="0" max="10">
   </div>
   <div class="col-md-3">
-    <input type="range" [(ngModel)]="decay" title="Decay {{decay}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="5">
+    <input type="range" (change)="toNumber()" [(ngModel)]="decay" title="Decay {{decay}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="5">
   </div>
   <div class="col-md-3">
-    <input type="range" [(ngModel)]="sustain" title="Sustain {{sustain}} (gain)" class="vertical-slider-sm" step="0.1" min="0" max="1">
+    <input type="range" (change)="toNumber()" [(ngModel)]="sustain" title="Sustain {{sustain}} (gain)" class="vertical-slider-sm" step="0.1" min="0" max="1">
   </div>
   <div class="col-md-3">
-    <input type="range" [(ngModel)]="release" title="Release {{release}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="15">
+    <input type="range" (change)="toNumber()" [(ngModel)]="release" title="Release {{release}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="15">
   </div>
 </div>

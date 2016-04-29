@@ -21,5 +21,12 @@ export class Envelope implements OnInit {
     this.sustain = 0.5;
     this.release = 2;
   }
+  
+  toNumber(){
+    this.attack = +this.attack;
+    this.decay = +this.decay;
+    this.sustain = +this.sustain;
+    this.release = +this.release;
+  }
 
 }
