@@ -31,6 +31,7 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     this.waveform = 2;
                     this.gain = 1; // @TODO should be 1/nb osc-comp
                     this.osc = null;
+                    this.offset = this.delay ? parseFloat(this.delay) : 0.0;
                 };
                 Oscillator.prototype.getWaveformFromNumber = function (value) {
                     switch (value) {
@@ -58,13 +59,14 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                 };
                 Oscillator.prototype.start = function (freq, output) {
                     console.log('start pressed');
+                    console.log(this.offset);
                     // create a new oscillator
                     this.osc = this.ac.createOscillator();
                     this.vca = this.ac.createGain();
                     this.vca.connect(output);
                     this.osc.frequency.value = freq;
                     this.osc.type = this.getWaveformFromNumber(this.waveform);
-                    this.osc.start(this.ac.currentTime);
+                    this.osc.start(this.ac.currentTime + this.offset);
                     // Silence oscillator gain
                     this.vca.gain.setValueAtTime(0, this.ac.currentTime);
                     // ATTACK
@@ -102,6 +104,10 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     core_1.Input(), 
                     __metadata('design:type', String)
                 ], Oscillator.prototype, "id", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', String)
+                ], Oscillator.prototype, "delay", void 0);
                 __decorate([
                     core_1.ViewChild(envelope_1.Envelope), 
                     __metadata('design:type', envelope_1.Envelope)

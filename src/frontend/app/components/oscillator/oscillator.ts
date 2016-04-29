@@ -16,9 +16,11 @@ export class Oscillator implements OnInit {
   protected osc: any; // osc node
   protected waveform: number; // osc waveform
   protected gain: number;
+  protected offset:any;
 
   @Input() ac: AudioContext;
   @Input() id: string;
+  @Input() delay: string;
   @ViewChild(Envelope) ENV:Envelope;
 
 
@@ -30,6 +32,7 @@ export class Oscillator implements OnInit {
     this.waveform = 2;
     this.gain = 1; // @TODO should be 1/nb osc-comp
     this.osc = null;
+    this.offset = this.delay ? parseFloat(this.delay):0.0;
   }
 
   getWaveformFromNumber(value) {
@@ -62,13 +65,15 @@ export class Oscillator implements OnInit {
 
   start(freq, output:GainNode) {
     console.log('start pressed');
+    console.log(this.offset);
+
     // create a new oscillator
     this.osc = this.ac.createOscillator();
     this.vca = this.ac.createGain();
     this.vca.connect(output);
     this.osc.frequency.value = freq;
     this.osc.type = this.getWaveformFromNumber(this.waveform);
-    this.osc.start(this.ac.currentTime);
+    this.osc.start(this.ac.currentTime + this.offset);
     // Silence oscillator gain
     this.vca.gain.setValueAtTime(0, this.ac.currentTime);
     // ATTACK
@@ -76,6 +81,9 @@ export class Oscillator implements OnInit {
     // SUSTAIN
     this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
     this.osc.connect(this.vca);
+
+
+
   }
 
   stop(output:GainNode) {
