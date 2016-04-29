@@ -30,10 +30,7 @@ System.register(['angular2/core', '../oscillator/oscillator'], function(exports_
                     this.master = this.ac.createGain();
                     this.master.connect(this.ac.destination);
                 };
-                SimpleSynth.prototype.ngAfterViewInit = function () {
-                    //console.log(this.oscComponents.length);
-                    //console.log(this.osc);
-                };
+                SimpleSynth.prototype.ngAfterViewInit = function () { };
                 SimpleSynth.prototype.noteOn = function (note) {
                     console.log('simple synth play note called ' + note);
                     console.log(this.notes);

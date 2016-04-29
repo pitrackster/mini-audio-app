@@ -19,7 +19,6 @@ export class SimpleSynth implements OnInit {
   @ViewChildren(Oscillator)
   oscComponents: QueryList<Oscillator>;
 
-
   protected notes: Array<any>;
   protected master:GainNode;
 
@@ -30,17 +29,11 @@ export class SimpleSynth implements OnInit {
     this.master.connect(this.ac.destination);
   }
 
-  ngAfterViewInit() {
-    //console.log(this.oscComponents.length);
-    //console.log(this.osc);
-  }
+  ngAfterViewInit() {}
 
   noteOn(note: any) {
     console.log('simple synth play note called ' + note);
     console.log(this.notes);
-
-
-
     for (let osc of this.oscComponents.toArray()) {
       osc.start(note, this.master);
     }

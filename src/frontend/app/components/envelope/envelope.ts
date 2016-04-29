@@ -16,12 +16,12 @@ export class Envelope implements OnInit {
   public release:number;
 
   ngOnInit() {
-    this.attack = 4;
-    this.decay = 4;
-    this.sustain = 0.5;
-    this.release = 2;
+    this.attack = 0;
+    this.decay = 0;
+    this.sustain = 1;
+    this.release = 0;
   }
-  
+
   toNumber(){
     this.attack = +this.attack;
     this.decay = +this.decay;
