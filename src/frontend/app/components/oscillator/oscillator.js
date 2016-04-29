@@ -24,14 +24,11 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
             Oscillator = (function () {
                 function Oscillator() {
                 }
-                Oscillator.prototype.construct = function () {
-                    console.log('osc constructed');
-                };
                 Oscillator.prototype.ngOnInit = function () {
                     this.waveform = 2;
                     this.gain = 1; // @TODO should be 1/nb osc-comp
                     this.osc = null;
-                    this.offset = this.delay ? parseFloat(this.delay) : 0.0;
+                    this.detune = 0;
                 };
                 Oscillator.prototype.getWaveformFromNumber = function (value) {
                     switch (value) {
@@ -49,30 +46,35 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                             return "triangle";
                     }
                 };
-                Oscillator.prototype.updateWaveform = function (event) {
+                Oscillator.prototype.updateWaveform = function ($event) {
                     console.log('update waveform');
                     this.waveform = +this.waveform;
                 };
-                Oscillator.prototype.updateVolume = function () {
+                Oscillator.prototype.updateVolume = function ($event) {
                     console.log('update volume');
                     this.gain = +this.gain;
                 };
+                Oscillator.prototype.updateTune = function ($event) {
+                    console.log('update tune');
+                    this.detune = +this.detune;
+                };
                 Oscillator.prototype.start = function (freq, output) {
                     console.log('start pressed');
-                    console.log(this.offset);
                     // create a new oscillator
                     this.osc = this.ac.createOscillator();
                     this.vca = this.ac.createGain();
                     this.vca.connect(output);
                     this.osc.frequency.value = freq;
                     this.osc.type = this.getWaveformFromNumber(this.waveform);
-                    this.osc.start(this.ac.currentTime + this.offset);
+                    this.osc.detune.value = this.detune;
+                    this.osc.start();
                     // Silence oscillator gain
                     this.vca.gain.setValueAtTime(0, this.ac.currentTime);
                     // ATTACK
                     this.vca.gain.linearRampToValueAtTime(this.gain, this.ac.currentTime + this.ENV.attack);
                     // SUSTAIN
                     this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
+                    // connect
                     this.osc.connect(this.vca);
                 };
                 Oscillator.prototype.stop = function (output) {
@@ -91,8 +93,8 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                             this.osc.stop(0);
                             this.osc.disconnect(this.vca);
                             this.osc = null;
+                            this.vca.disconnect(output);
                         }
-                        this.vca.disconnect(output);
                         console.log('stop... for real');
                     }.bind(this), this.ENV.release * 1000);
                 };
@@ -105,10 +107,6 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     __metadata('design:type', String)
                 ], Oscillator.prototype, "id", void 0);
                 __decorate([
-                    core_1.Input(), 
-                    __metadata('design:type', String)
-                ], Oscillator.prototype, "delay", void 0);
-                __decorate([
                     core_1.ViewChild(envelope_1.Envelope), 
                     __metadata('design:type', envelope_1.Envelope)
                 ], Oscillator.prototype, "ENV", void 0);
@@ -116,6 +114,7 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     core_1.Component({
                         selector: 'osc-comp',
                         templateUrl: './app/components/oscillator/oscillator.html',
+                        //styleUrls: ['./css/app.min.css'],
                         directives: [
                             envelope_1.Envelope
                         ]

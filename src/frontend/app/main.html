@@ -1,38 +1,79 @@
 <div class="container-fluid">
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a href="#" class="navbar-brand">mini-studio</a>
-      </div>
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li>
-            <a href="#">
-              <button class="btn btn-default" (mousedown)="SimpleSynth.noteOn(440)" (mouseup)="SimpleSynth.noteOff()">play 440</button>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <button class="btn btn-default" (mousedown)="SimpleSynth.noteOn(880)" (mouseup)="SimpleSynth.noteOff()">play 880</button>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#" class="navbar-brand">mini-studio</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">
+                            <button class="btn btn-default" (mousedown)="SimpleSynth.noteOn(440)" (mouseup)="SimpleSynth.noteOff()">play 440</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <button class="btn btn-default" (mousedown)="SimpleSynth.noteOn(880)" (mouseup)="SimpleSynth.noteOff()">play 880</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <button class="btn btn-default" (mousedown)="SimpleSynth.noteOn(327)" (mouseup)="SimpleSynth.noteOff()">play 327</button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  <div class="row" style="margin-top:90px;">
-    <div class="col-md-12">
-
-      <!-- ac = AudioContext -->
-      <simple-synth-comp #SimpleSynth [ac]="ac"></simple-synth-comp>
+    <div class="row" style="margin-top:90px;">
+        <div class="col-md-12">
+            <!-- synth -->
+            <div class="row">
+                <div class="col-md-12">
+                    <simple-synth-comp #SimpleSynth [ac]="ac"></simple-synth-comp>
+                </div>
+            </div>
+            <hr>
+            <!-- keys -->
+            <div class="row">
+                <div class="col-md-12 center-text">
+<!--
+                  <ul class="keyboard-black">
+                    <template ngFor #key [ngForOf]="keys">
+                      <li *ngIf="key.class==='key-black'" ngClass="key {{key.class}}" (mousedown)="SimpleSynth.noteOn(key.frequency)" (mouseup)="SimpleSynth.noteOff()">
+                          {{key.name}}
+                      </li>
+                    </template>
+                  </ul>
+                -->
+                    <ul class="keyboard">
+                      <template ngFor #key [ngForOf]="keys" #i="index">
+                        {{-30*i}}px
+                        <li style="left:{-30*i}px;" ngClass="key {{key.class}}" (mousedown)="SimpleSynth.noteOn(key.frequency)" (mouseup)="SimpleSynth.noteOff()">
+                            {{key.name}}
+                        </li>
+                        <!--
+                        <li *ngIf="i > 0" ngClass="key {{key.class}} move-left" (mousedown)="SimpleSynth.noteOn(key.frequency)" (mouseup)="SimpleSynth.noteOff()">
+                            {{key.name}}
+                        </li>
+                      -->
+                        <!--
+                        <li *ngIf="i > 0 && key.class==='key-white'" ngClass="key {{key.class}} move-left" (mousedown)="SimpleSynth.noteOn(key.frequency)" (mouseup)="SimpleSynth.noteOff()">
+                            {{key.name}}
+                        </li>
+                      -->
+                      </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
 </div>
