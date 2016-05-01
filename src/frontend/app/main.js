@@ -1,4 +1,4 @@
-System.register(['angular2/platform/browser', 'angular2/core', './components/simple-synth/simple-synth'], function(exports_1, context_1) {
+System.register(['angular2/platform/browser', 'angular2/core', './components/simple-synth/simple-synth', './components/keyboard/keyboard'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/platform/browser', 'angular2/core', './components/sim
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var browser_1, core_1, simple_synth_1;
+    var browser_1, core_1, simple_synth_1, keyboard_1;
     var Main;
     return {
         setters:[
@@ -22,6 +22,9 @@ System.register(['angular2/platform/browser', 'angular2/core', './components/sim
             },
             function (simple_synth_1_1) {
                 simple_synth_1 = simple_synth_1_1;
+            },
+            function (keyboard_1_1) {
+                keyboard_1 = keyboard_1_1;
             }],
         execute: function() {
             Main = (function () {
@@ -29,20 +32,6 @@ System.register(['angular2/platform/browser', 'angular2/core', './components/sim
                     console.log('main constructor');
                     this.ac = new AudioContext();
                     // https://en.wikipedia.org/wiki/Piano_key_frequencies
-                    this.keys = [
-                        { 'name': 'C1', 'frequency': 32.7032, 'class': 'key-white' },
-                        { 'name': 'C#1', 'frequency': 34.6478, 'class': 'key-black' },
-                        { 'name': 'D1', 'frequency': 36.7081, 'class': 'key-white' },
-                        { 'name': 'D#1', 'frequency': 38.8909, 'class': 'key-black' },
-                        { 'name': 'E1', 'frequency': 41.2034, 'class': 'key-white' },
-                        { 'name': 'F1', 'frequency': 43.6535, 'class': 'key-white' },
-                        { 'name': 'F#1', 'frequency': 46.2493, 'class': 'key-black' },
-                        { 'name': 'G1', 'frequency': 48.9994, 'class': 'key-white' },
-                        { 'name': 'G#1', 'frequency': 51.9131, 'class': 'key-black' },
-                        { 'name': 'A1', 'frequency': 55.0000, 'class': 'key-white' },
-                        { 'name': 'A#1', 'frequency': 58.2705, 'class': 'key-black' },
-                        { 'name': 'B1', 'frequency': 61.7354, 'class': 'key-white' },
-                    ];
                     /*
                     G7 	3135.96
                     82 	f♯′′′′/g♭′′′′ 	F♯7/G♭7 	2959.96
@@ -134,7 +123,8 @@ System.register(['angular2/platform/browser', 'angular2/core', './components/sim
                         selector: 'main-app',
                         templateUrl: './app/main.html',
                         directives: [
-                            simple_synth_1.SimpleSynth
+                            simple_synth_1.SimpleSynth,
+                            keyboard_1.Keyboard,
                         ]
                     }), 
                     __metadata('design:paramtypes', [])

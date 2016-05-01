@@ -41,17 +41,7 @@
       </div>
       <hr>
       <!-- keys -->
-      <div class="row">
-        <div class="col-md-12">
-            <div class="kbd">
-              <div class="keys">
-                <template ngFor #key [ngForOf]="keys">
-                  <div ngClass="key {{key.class}}" (mousedown)="SimpleSynth.noteOn(key.frequency)" (mouseup)="SimpleSynth.noteOff()">{{key.name}}</div>
-                </template>
-              </div>
-            </div>
-        </div>
-      </div>
+      <keyboard-comp></keyboard-comp>
     </div>
   </div>
 
