@@ -15,5 +15,7 @@ export class Note{
     this.keyCode = keyCode;
   }
 
-
+  getFrequency():number{
+    return this.frequency;
+  }
 }

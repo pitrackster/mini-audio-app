@@ -7,6 +7,7 @@ import {Note} from './models/Note';
     templateUrl: './app/components/keyboard/keyboard.html',
     styleUrls: ['./app/components/keyboard/keyboard.css'],
     directives: [
+
     ]
 })
 
@@ -17,6 +18,7 @@ export class Keyboard implements OnInit {
 
     @Output() noteOn: EventEmitter<any> = new EventEmitter();
     @Output() noteOff: EventEmitter<any> = new EventEmitter();
+
 
     /*
     // https://www.w3.org/2002/09/tests/keys.html
@@ -67,29 +69,28 @@ export class Keyboard implements OnInit {
     ngOnInit() {
     }
 
-    emitNoteOn(note:Note) {
+    emitNoteOn(note: Note) {
         console.log('note on');
+        console.log(note);
         this.noteOn.next(this.notes);
     }
 
-    emitNoteOff(note:Note) {
+    emitNoteOff(note: Note) {
         console.log('note off');
         this.noteOff.next(this.notes);
     }
 
-    handleKeyPressed($event, note:Note){
-      console.log('key pressed');
-      console.log($event, $event.keyCode, $event.keyIdentifier);
+
+    handleKeyDown($event, note: Note) {
+        console.log('key down');
+        console.log($event, $event.keyCode, $event.keyIdentifier);
+        console.log(note);
     }
 
-    handleKeyDown($event, note:Note){
-      console.log('key down');
-      console.log($event, $event.keyCode, $event.keyIdentifier);
-    }
-
-    handleKeyUp($event, note:Note){
-      console.log('key up');
-      console.log($event, $event.keyCode, $event.keyIdentifier);
+    handleKeyUp($event, note: Note) {
+        console.log('key up');
+        console.log($event, $event.keyCode, $event.keyIdentifier);
+        console.log(note);
     }
 
 
