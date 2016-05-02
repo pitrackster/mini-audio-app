@@ -15,6 +15,7 @@ export class Keyboard implements OnInit {
 
     protected keys: Array<Note>;
     protected notes: Array<Note>;
+    protected keysDown:Array<boolean>;
 
     @Output() noteOn: EventEmitter<any> = new EventEmitter();
     @Output() noteOff: EventEmitter<any> = new EventEmitter();
@@ -38,6 +39,7 @@ export class Keyboard implements OnInit {
     */
     constructor() {
         this.notes = [];
+        this.keysDown = [];
         this.keys = [
             new Note('C1', 32.7032, 'key-white', 81),
             new Note('C#1', 34.6478, 'key-black', 90),
@@ -80,28 +82,44 @@ export class Keyboard implements OnInit {
         this.noteOff.next(note);
     }
 
+    /**
+    * can not handle multiple keys for now
+    * http://blog.chrislowis.co.uk/2013/06/10/playing-multiple-notes-web-audio-api.html
+    * http://stuartmemo.com/qwerty-hancock/
+    **/
 
+    /*
+
+
+    */
     handleKeyDown($event) {
         console.log('key down');
         console.log($event, $event.repeat, $event.keyCode, $event.keyIdentifier);
-        if(!$event.repeat){          
+        if ($event.keyCode in this.keysDown) {
+           return;
+        }
+
+       this.keysDown[$event.keyCode] = true;
+       let note = this.findNoteFromKeyCode($event.keyCode);
+       //if(note) this.noteOn.next(note);
+      /*  if(!$event.repeat){
           let note = this.findNoteFromKeyCode($event.keyCode);
           console.log(note);
           if(note) this.noteOn.next(note);
-        }
+        }*/
     }
 
     handleKeyUp($event) {
         console.log('key up');
-        console.log($event,  $event.repeat, $event.keyCode, $event.keyIdentifier);
+        //console.log($event,  $event.repeat, $event.keyCode, $event.keyIdentifier);
+        delete this.keysDown[$event.keyCode];
         let note = this.findNoteFromKeyCode($event.keyCode);
-        console.log(note);
-        if(note) this.noteOff.next(note);
+        //if(note) this.noteOff.next(note);
     }
 
     findNoteFromKeyCode(keyCode):Note{
       let note = this.keys.find(e => e.keyCode === keyCode);
-      console.log(note);
+      //console.log(note);
       return note;
     }
 
