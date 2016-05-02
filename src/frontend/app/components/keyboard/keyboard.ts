@@ -72,25 +72,37 @@ export class Keyboard implements OnInit {
     emitNoteOn(note: Note) {
         console.log('note on');
         console.log(note);
-        this.noteOn.next(this.notes);
+        this.noteOn.next(note);
     }
 
     emitNoteOff(note: Note) {
         console.log('note off');
-        this.noteOff.next(this.notes);
+        this.noteOff.next(note);
     }
 
 
-    handleKeyDown($event, note: Note) {
+    handleKeyDown($event) {
         console.log('key down');
-        console.log($event, $event.keyCode, $event.keyIdentifier);
-        console.log(note);
+        console.log($event, $event.repeat, $event.keyCode, $event.keyIdentifier);
+        if(!$event.repeat){          
+          let note = this.findNoteFromKeyCode($event.keyCode);
+          console.log(note);
+          if(note) this.noteOn.next(note);
+        }
     }
 
-    handleKeyUp($event, note: Note) {
+    handleKeyUp($event) {
         console.log('key up');
-        console.log($event, $event.keyCode, $event.keyIdentifier);
+        console.log($event,  $event.repeat, $event.keyCode, $event.keyIdentifier);
+        let note = this.findNoteFromKeyCode($event.keyCode);
         console.log(note);
+        if(note) this.noteOff.next(note);
+    }
+
+    findNoteFromKeyCode(keyCode):Note{
+      let note = this.keys.find(e => e.keyCode === keyCode);
+      console.log(note);
+      return note;
     }
 
 

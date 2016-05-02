@@ -1,12 +1,14 @@
 import {bootstrap}    from 'angular2/platform/browser';
 import {Component, Input, ViewChildren, OnInit, QueryList} from 'angular2/core';
 import {Oscillator} from '../oscillator/oscillator';
+import {Keyboard} from '../keyboard/keyboard';
 
 @Component({
   selector: 'simple-synth-comp',
   templateUrl: './app/components/simple-synth/simple-synth.html',
   directives: [
-    Oscillator
+    Oscillator,
+    Keyboard
   ]
 })
 
@@ -46,6 +48,8 @@ export class SimpleSynth implements OnInit {
       osc.stop(this.master);
     }
   }
+
+  
 
 
 }

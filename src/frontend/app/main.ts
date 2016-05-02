@@ -113,6 +113,18 @@ class Main {
 
   }
 
+  handleNoteOn($event){
+    console.log('main noteon');
+    console.log($event);
+    this.synth.noteOn($event.frequency);
+  }
+
+  handleNoteOff($event){
+    console.log('main noteoff');
+    console.log($event);
+    this.synth.noteOff();
+  }
+
 
 
 
