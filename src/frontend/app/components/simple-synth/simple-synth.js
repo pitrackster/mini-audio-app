@@ -1,4 +1,4 @@
-System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keyboard', '../../models/Voice'], function(exports_1, context_1) {
+System.register(['angular2/core', '../oscillator/oscillatorCtrl', '../keyboard/keyboard', '../../models/Voice'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,15 +10,15 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, oscillator_1, keyboard_1, Voice_1;
+    var core_1, oscillatorCtrl_1, keyboard_1, Voice_1;
     var SimpleSynth;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
-            function (oscillator_1_1) {
-                oscillator_1 = oscillator_1_1;
+            function (oscillatorCtrl_1_1) {
+                oscillatorCtrl_1 = oscillatorCtrl_1_1;
             },
             function (keyboard_1_1) {
                 keyboard_1 = keyboard_1_1;
@@ -27,11 +27,9 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
                 Voice_1 = Voice_1_1;
             }],
         execute: function() {
-            //import {Note} from '../keyboard/models/Note';
             SimpleSynth = (function () {
                 function SimpleSynth() {
                 }
-                //protected voice:Voice;
                 SimpleSynth.prototype.ngOnInit = function () {
                     this.voices = new Array();
                     // create master output vca / gain
@@ -41,17 +39,14 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
                 SimpleSynth.prototype.ngAfterViewInit = function () {
                 };
                 SimpleSynth.prototype.noteOn = function (freq) {
-                    //console.log('simple synth play note at frequency called ' + freq);
-                    //console.log(this.notes);
-                    var voice = new Voice_1.Voice(this.ac, this.master);
+                    var voice = new Voice_1.Voice(this.ac, this.master, this.oscCtrls.toArray());
                     voice.start(freq);
                     this.voices.push(voice);
                 };
                 SimpleSynth.prototype.noteOff = function (frequency) {
-                    console.log('simple synth note off called ');
                     var toKeep = new Array();
                     for (var i = 0; i < this.voices.length; i++) {
-                        if (Math.round(this.voices[i].OSC1.frequency.value) === Math.round(frequency)) {
+                        if (Math.round(this.voices[i].frequency) === Math.round(frequency)) {
                             this.voices[i].stop();
                         }
                         else {
@@ -64,12 +59,16 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
                     core_1.Input(), 
                     __metadata('design:type', AudioContext)
                 ], SimpleSynth.prototype, "ac", void 0);
+                __decorate([
+                    core_1.ViewChildren(oscillatorCtrl_1.OscillatorCtrl), 
+                    __metadata('design:type', core_1.QueryList)
+                ], SimpleSynth.prototype, "oscCtrls", void 0);
                 SimpleSynth = __decorate([
                     core_1.Component({
                         selector: 'simple-synth-comp',
                         templateUrl: './app/components/simple-synth/simple-synth.html',
                         directives: [
-                            oscillator_1.Oscillator,
+                            oscillatorCtrl_1.OscillatorCtrl,
                             keyboard_1.Keyboard
                         ]
                     }), 

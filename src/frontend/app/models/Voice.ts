@@ -1,111 +1,95 @@
-import {Envelope} from '../components/envelope/envelope';
+import {OscillatorCtrl} from '../components/oscillator/oscillatorCtrl';
 
 export class Voice{
 
-  public OSC1:OscillatorNode;
-  public OSC2:OscillatorNode;
-  public OSC3:OscillatorNode;
-  public AMP1:GainNode;
-  public AMP2:GainNode;
-  public AMP3:GainNode;
-  public vca:GainNode;
-  public ENV:Envelope;// should be a complete OSC + ENV graphical controller
-  public ctx:AudioContext;
+  public oscillators:Array<any>;
+  public controllers:Array<OscillatorCtrl>;
 
-  constructor(context:AudioContext, output:GainNode, env:Envelope)
+  public vca:GainNode;
+  public ctx:AudioContext;
+  public ENV:any;
+  public frequency:number;
+
+  constructor(context:AudioContext, output:GainNode, ctrls:Array<OscillatorCtrl>)
   {
     this.ctx = context;
-    /* OSC */
-    this.OSC1 = context.createOscillator()
-    this.OSC1.type = 'square'
-    this.OSC1.detune.value = 0
+    this.controllers = ctrls;
 
-    this.OSC2 = context.createOscillator()
-    this.OSC2.type = 'sawtooth'
-    this.OSC2.detune.value = 0
+    this.vca = context.createGain();
+    this.vca.gain.value = 1/ctrls.length;
+    this.oscillators = [];
 
-    this.OSC3 = context.createOscillator()
-    this.OSC3.type = 'triangle'
-    this.OSC3.detune.value = 12
+    for(let ctrl of ctrls){
+      let osc = context.createOscillator();
+      osc.type = this.getWaveformFromNumber(ctrl.waveform);
+      osc.detune.value = ctrl.detune;
 
-    /* AMP */
-    this.AMP1 = context.createGain()
-    this.AMP1.gain.value = 1.0
+      let amp = context.createGain();
+      amp.gain.value = ctrl.gain;
 
-    this.AMP2 = context.createGain()
-    this.AMP2.gain.value = 1.0
-
-    this.AMP3 = context.createGain()
-    this.AMP3.gain.value = 1.0
-
-    /* ADSR */
-    this.ENV = env;
-    /* Global Voice Gain */
-    this.vca = context.createGain()
-    this.vca.gain.value = 1/3
-
-    /* connections */
-    // Connect OSC to AMP
-    this.OSC1.connect(this.AMP1)
-    this.OSC2.connect(this.AMP2)
-    this.OSC3.connect(this.AMP3)
-
-    // Connect AMP to VCA
-    this.AMP1.connect(this.vca)
-    this.AMP2.connect(this.vca)
-    this.AMP3.connect(this.vca)
-
+      osc.connect(amp);
+      amp.connect(this.vca);
+      this.oscillators.push(
+        {
+          osc:osc,
+          amp:amp,
+          ctrl:ctrl
+        }
+      );
+    }
     // Connect VCA to output
     this.vca.connect(output)
 
   }
 
+  getWaveformFromNumber(value) {
+    switch (value) {
+      case 1:
+        //console.log('must return a sine');
+        return "sine";
+      case 2:
+        //console.log('must return a square');
+        return "square";
+      case 3:
+        //console.log('must return a sawtooth');
+        return "sawtooth";
+      case 4:
+        //console.log('must return a triangle');
+        return "triangle";
+    }
+  }
 
   start(freq) {
      // Set frequency
-     this.OSC1.frequency.value = freq
-     this.OSC2.frequency.value = freq
-     this.OSC3.frequency.value = freq
+     this.frequency = freq;
 
-     // Start oscillators at 0 gain
-     this.OSC1.start(this.ctx.currentTime)
-     this.OSC2.start(this.ctx.currentTime)
-     this.OSC3.start(this.ctx.currentTime)
-
-     // Silence oscillator gain
-     this.vca.gain.setValueAtTime(0, this.ctx.currentTime)
-
-     // ATTACK
-     this.vca.gain.linearRampToValueAtTime(1/3, this.ctx.currentTime + this.ENV.attack)
-
-     // SUSTAIN
-     this.vca.gain.linearRampToValueAtTime(1/3 * this.ENV.sustain, this.ctx.currentTime + this.ENV.attack + this.ENV.decay)
-     //console.log('yopi');
+     for(let voice of this.oscillators){
+       voice.osc.frequency.value = freq;
+       voice.osc.start(this.ctx.currentTime);
+       voice.osc.type = this.getWaveformFromNumber(voice.ctrl.waveform);
+       voice.osc.detune.value = voice.ctrl.detune;
+       voice.amp.gain.setValueAtTime(0, this.ctx.currentTime);
+       // attack
+       voice.amp.gain.linearRampToValueAtTime(voice.ctrl.gain/this.oscillators.length, this.ctx.currentTime + voice.ctrl.attack);
+       // decay
+       voice.amp.gain.linearRampToValueAtTime(voice.ctrl.sustain/this.oscillators.length, this.ctx.currentTime + voice.ctrl.attack + voice.ctrl.decay);
+     }
    }
 
    stop() {
-     // Clear previous envelope values
-     this.vca.gain.cancelScheduledValues(this.ctx.currentTime)
-
-     // RELEASE
-     this.vca.gain.linearRampToValueAtTime(0, this.ctx.currentTime + this.ENV.release)
-
-     // Terminate after release
-     setTimeout(function(){
-       // Stop all oscillators
-       this.vca.gain.value = 0.0
-       this.OSC1.stop(0)
-       this.OSC2.stop(0)
-       this.OSC3.stop(0)
-
-       /* disconnection */
-       this.OSC1.disconnect(this.AMP1)
-       this.OSC2.disconnect(this.AMP2)
-       this.OSC3.disconnect(this.AMP3)
-       this.AMP1.disconnect(this.vca)
-       this.AMP2.disconnect(this.vca)
-       this.AMP3.disconnect(this.vca)
-     }.bind(this), this.ENV.release * 1000)
+     for(let voice of this.oscillators){
+       //voice.amp.cancel
+       // release
+       voice.amp.gain.linearRampToValueAtTime(0, this.ctx.currentTime + voice.ctrl.release);
+       setTimeout(function(){
+         // Stop all oscillators
+         voice.amp.gain.value = 0.0
+         voice.osc.stop(0);
+         /* disconnection */
+         voice.osc.disconnect(voice.amp);
+         voice.amp.disconnect(this.vca);
+       }.bind(this), voice.ctrl.release * 1000)
+     }
    }
 
 }
