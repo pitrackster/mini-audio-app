@@ -23,6 +23,13 @@ export class Oscillator implements OnInit {
   @Input() id: string;
   @ViewChild(Envelope) ENV:Envelope;
 
+  constructor(){
+    this.waveform = 2;
+    this.gain = 1; // @TODO should be 1/nb osc-comp
+    this.osc = null;
+    this.detune = 0;
+  }
+
   ngOnInit() {
     this.waveform = 2;
     this.gain = 1; // @TODO should be 1/nb osc-comp
@@ -62,31 +69,40 @@ export class Oscillator implements OnInit {
     this.detune = +this.detune;
   }
 
+  getOsc(){
+    return this.osc;
+  }
+
   start(freq, output:GainNode) {
     console.log('start pressed');
     // create a new oscillator
     this.osc = this.ac.createOscillator();
     this.vca = this.ac.createGain();
     this.vca.connect(output);
+    // connect
+    this.osc.connect(this.vca);
     this.osc.frequency.value = freq;
     this.osc.type = this.getWaveformFromNumber(this.waveform);
     this.osc.detune.value = this.detune;
     this.osc.start();
+
+
     // Silence oscillator gain
     this.vca.gain.setValueAtTime(0, this.ac.currentTime);
+
     // ATTACK
     this.vca.gain.linearRampToValueAtTime(this.gain, this.ac.currentTime + this.ENV.attack);
     // SUSTAIN
-    this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
-    // connect
-    this.osc.connect(this.vca);
+    //this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
+
   }
 
   stop(output:GainNode) {
 
     console.log('stop');
+    console.log(output ? 'output':'no output');
     // Clear previous envelope values
-    this.vca.gain.cancelScheduledValues(this.ac.currentTime);
+    //this.vca.gain.cancelScheduledValues(this.ac.currentTime);
     // set osc gain to sustain value
     // this.vca.gain.setValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime);
     // RELEASE
@@ -95,14 +111,12 @@ export class Oscillator implements OnInit {
     window.setTimeout(function() {
       // Stop oscillator
       this.vca.gain.value = 0.0;
-      if(this.osc) {
+      //if(this.osc) {
         this.osc.stop(0);
-        this.osc.disconnect(this.vca);
-        this.osc = null;
-        this.vca.disconnect(output);
-      }
-
-
+        this.osc.disconnect();
+    //    this.osc = null;
+        this.vca.disconnect();
+      //}
       console.log('stop... for real');
 
     }.bind(this), this.ENV.release * 1000);

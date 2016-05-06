@@ -113,16 +113,17 @@ class Main {
 
   }
 
+  // event is a Note
   handleNoteOn($event){
-    console.log('main noteon');
-    console.log($event);
+    //console.log('main noteon');
+    //console.log($event);
     this.synth.noteOn($event.frequency);
   }
 
   handleNoteOff($event){
-    console.log('main noteoff');
-    console.log($event);
-    this.synth.noteOff();
+    //console.log('main noteoff');
+    //console.log($event);
+    this.synth.noteOff($event.frequency);
   }
 
 

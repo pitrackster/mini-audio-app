@@ -15,7 +15,7 @@ export class Keyboard implements OnInit {
 
     protected keys: Array<Note>;
     protected notes: Array<Note>;
-    protected keysDown:Array<boolean>;
+    protected keysDown: Array<boolean>;
 
     @Output() noteOn: EventEmitter<any> = new EventEmitter();
     @Output() noteOff: EventEmitter<any> = new EventEmitter();
@@ -72,8 +72,8 @@ export class Keyboard implements OnInit {
     }
 
     emitNoteOn(note: Note) {
-        console.log('note on');
-        console.log(note);
+        //console.log('note on');
+        //console.log(note);
         this.noteOn.next(note);
     }
 
@@ -94,33 +94,33 @@ export class Keyboard implements OnInit {
     */
     handleKeyDown($event) {
         console.log('key down');
-        console.log($event, $event.repeat, $event.keyCode, $event.keyIdentifier);
+        //console.log($event, $event.repeat, $event.keyCode, typeof $event.keyCode, $event.keyIdentifier);
         if ($event.keyCode in this.keysDown) {
-           return;
+            return;
         }
 
-       this.keysDown[$event.keyCode] = true;
-       let note = this.findNoteFromKeyCode($event.keyCode);
-       //if(note) this.noteOn.next(note);
-      /*  if(!$event.repeat){
-          let note = this.findNoteFromKeyCode($event.keyCode);
-          console.log(note);
-          if(note) this.noteOn.next(note);
-        }*/
+
+        if (!$event.repeat) {
+            this.keysDown[$event.keyCode] = true;
+            let note = this.findNoteFromKeyCode($event.keyCode);
+            if (note) this.noteOn.next(note);
+        }
     }
 
     handleKeyUp($event) {
         console.log('key up');
         //console.log($event,  $event.repeat, $event.keyCode, $event.keyIdentifier);
-        delete this.keysDown[$event.keyCode];
+
         let note = this.findNoteFromKeyCode($event.keyCode);
-        //if(note) this.noteOff.next(note);
+        if (note) this.noteOff.next(note);
+        delete this.keysDown[$event.keyCode];
+        console.log(this.keysDown);
     }
 
-    findNoteFromKeyCode(keyCode):Note{
-      let note = this.keys.find(e => e.keyCode === keyCode);
-      //console.log(note);
-      return note;
+    findNoteFromKeyCode(keyCode): Note {
+        let note = this.keys.find(e => e.keyCode === keyCode);
+        //console.log(note);
+        return note;
     }
 
 

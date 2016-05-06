@@ -23,6 +23,10 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
         execute: function() {
             Oscillator = (function () {
                 function Oscillator() {
+                    this.waveform = 2;
+                    this.gain = 1; // @TODO should be 1/nb osc-comp
+                    this.osc = null;
+                    this.detune = 0;
                 }
                 Oscillator.prototype.ngOnInit = function () {
                     this.waveform = 2;
@@ -58,12 +62,17 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     console.log('update tune');
                     this.detune = +this.detune;
                 };
+                Oscillator.prototype.getOsc = function () {
+                    return this.osc;
+                };
                 Oscillator.prototype.start = function (freq, output) {
                     console.log('start pressed');
                     // create a new oscillator
                     this.osc = this.ac.createOscillator();
                     this.vca = this.ac.createGain();
                     this.vca.connect(output);
+                    // connect
+                    this.osc.connect(this.vca);
                     this.osc.frequency.value = freq;
                     this.osc.type = this.getWaveformFromNumber(this.waveform);
                     this.osc.detune.value = this.detune;
@@ -73,14 +82,13 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     // ATTACK
                     this.vca.gain.linearRampToValueAtTime(this.gain, this.ac.currentTime + this.ENV.attack);
                     // SUSTAIN
-                    this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
-                    // connect
-                    this.osc.connect(this.vca);
+                    //this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
                 };
                 Oscillator.prototype.stop = function (output) {
                     console.log('stop');
+                    console.log(output ? 'output' : 'no output');
                     // Clear previous envelope values
-                    this.vca.gain.cancelScheduledValues(this.ac.currentTime);
+                    //this.vca.gain.cancelScheduledValues(this.ac.currentTime);
                     // set osc gain to sustain value
                     // this.vca.gain.setValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime);
                     // RELEASE
@@ -89,12 +97,12 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     window.setTimeout(function () {
                         // Stop oscillator
                         this.vca.gain.value = 0.0;
-                        if (this.osc) {
-                            this.osc.stop(0);
-                            this.osc.disconnect(this.vca);
-                            this.osc = null;
-                            this.vca.disconnect(output);
-                        }
+                        //if(this.osc) {
+                        this.osc.stop(0);
+                        this.osc.disconnect();
+                        //    this.osc = null;
+                        this.vca.disconnect();
+                        //}
                         console.log('stop... for real');
                     }.bind(this), this.ENV.release * 1000);
                 };

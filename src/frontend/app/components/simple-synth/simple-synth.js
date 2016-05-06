@@ -1,4 +1,4 @@
-System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keyboard'], function(exports_1, context_1) {
+System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keyboard', '../../models/Voice'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, oscillator_1, keyboard_1;
+    var core_1, oscillator_1, keyboard_1, Voice_1;
     var SimpleSynth;
     return {
         setters:[
@@ -22,42 +22,48 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
             },
             function (keyboard_1_1) {
                 keyboard_1 = keyboard_1_1;
+            },
+            function (Voice_1_1) {
+                Voice_1 = Voice_1_1;
             }],
         execute: function() {
+            //import {Note} from '../keyboard/models/Note';
             SimpleSynth = (function () {
                 function SimpleSynth() {
                 }
+                //protected voice:Voice;
                 SimpleSynth.prototype.ngOnInit = function () {
-                    this.notes = Array();
+                    this.voices = new Array();
                     // create master output vca / gain
                     this.master = this.ac.createGain();
                     this.master.connect(this.ac.destination);
                 };
-                SimpleSynth.prototype.ngAfterViewInit = function () { };
-                SimpleSynth.prototype.noteOn = function (note) {
-                    console.log('simple synth play note called ' + note);
-                    console.log(this.notes);
-                    for (var _i = 0, _a = this.oscComponents.toArray(); _i < _a.length; _i++) {
-                        var osc = _a[_i];
-                        osc.start(note, this.master);
-                    }
+                SimpleSynth.prototype.ngAfterViewInit = function () {
                 };
-                SimpleSynth.prototype.noteOff = function () {
+                SimpleSynth.prototype.noteOn = function (freq) {
+                    //console.log('simple synth play note at frequency called ' + freq);
+                    //console.log(this.notes);
+                    var voice = new Voice_1.Voice(this.ac, this.master);
+                    voice.start(freq);
+                    this.voices.push(voice);
+                };
+                SimpleSynth.prototype.noteOff = function (frequency) {
                     console.log('simple synth note off called ');
-                    for (var _i = 0, _a = this.oscComponents.toArray(); _i < _a.length; _i++) {
-                        var osc = _a[_i];
-                        console.log('simple synth note off stop osc ');
-                        osc.stop(this.master);
+                    var toKeep = new Array();
+                    for (var i = 0; i < this.voices.length; i++) {
+                        if (Math.round(this.voices[i].OSC1.frequency.value) === Math.round(frequency)) {
+                            this.voices[i].stop();
+                        }
+                        else {
+                            toKeep.push(this.voices[i]);
+                        }
                     }
+                    this.voices = toKeep;
                 };
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', AudioContext)
                 ], SimpleSynth.prototype, "ac", void 0);
-                __decorate([
-                    core_1.ViewChildren(oscillator_1.Oscillator), 
-                    __metadata('design:type', core_1.QueryList)
-                ], SimpleSynth.prototype, "oscComponents", void 0);
                 SimpleSynth = __decorate([
                     core_1.Component({
                         selector: 'simple-synth-comp',
