@@ -18,7 +18,7 @@ export class Voice{
     this.vca = context.createGain();
     this.vca.gain.value = 1/ctrls.length;
     this.oscillators = [];
-
+    // for each ctrl in the DOM create an osc
     for(let ctrl of ctrls){
       let osc = context.createOscillator();
       osc.type = this.getWaveformFromNumber(ctrl.waveform);

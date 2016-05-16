@@ -31,10 +31,19 @@ export class SimpleSynth implements OnInit {
         this.master.connect(this.ac.destination);
     }
 
-    ngAfterViewInit() {
-
+    noteOn(freq: number) {
+        let voice = new Voice(this.ac, this.master, this.oscCtrls.toArray());
+        voice.start(freq);
+        this.voices[freq]= voice;
     }
 
+    noteOff(freq:number) {
+
+        this.voices[freq].stop();
+        delete this.voices[freq];
+    }
+
+    /*
     noteOn(freq: number) {
         let voice = new Voice(this.ac, this.master, this.oscCtrls.toArray());
         voice.start(freq);
@@ -52,5 +61,5 @@ export class SimpleSynth implements OnInit {
             }
         }
         this.voices = toKeep;
-    }
+    }*/
 }

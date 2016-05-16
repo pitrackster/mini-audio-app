@@ -10,7 +10,7 @@ import {Component, Input, OnInit, ViewChild} from 'angular2/core';
 })
 
 export class OscillatorCtrl {
-
+  // OSC
   public gain:number;
   public waveform:number;
   public detune:number;

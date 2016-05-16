@@ -36,24 +36,14 @@ System.register(['angular2/core', '../oscillator/oscillatorCtrl', '../keyboard/k
                     this.master = this.ac.createGain();
                     this.master.connect(this.ac.destination);
                 };
-                SimpleSynth.prototype.ngAfterViewInit = function () {
-                };
                 SimpleSynth.prototype.noteOn = function (freq) {
                     var voice = new Voice_1.Voice(this.ac, this.master, this.oscCtrls.toArray());
                     voice.start(freq);
-                    this.voices.push(voice);
+                    this.voices[freq] = voice;
                 };
-                SimpleSynth.prototype.noteOff = function (frequency) {
-                    var toKeep = new Array();
-                    for (var i = 0; i < this.voices.length; i++) {
-                        if (Math.round(this.voices[i].frequency) === Math.round(frequency)) {
-                            this.voices[i].stop();
-                        }
-                        else {
-                            toKeep.push(this.voices[i]);
-                        }
-                    }
-                    this.voices = toKeep;
+                SimpleSynth.prototype.noteOff = function (freq) {
+                    this.voices[freq].stop();
+                    delete this.voices[freq];
                 };
                 __decorate([
                     core_1.Input(), 
