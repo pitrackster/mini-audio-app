@@ -29,7 +29,7 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     //this.gain = 1; // @TODO should be 1/nb osc-comp
                     //this.osc = null;
                     this.detune = 0;
-                    this.notes = new Array();
+                    this.voices = new Array();
                 };
                 Oscillator.prototype.getWaveformFromNumber = function (value) {
                     switch (value) {
@@ -74,28 +74,33 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     // connect
                     osc.connect(vca);
                     var voice = { osc: osc, vca: vca };
-                    this.notes[freq] = voice;
+                    this.voices[freq] = voice;
                 };
-                Oscillator.prototype.stop = function (output) {
+                Oscillator.prototype.stop = function (freq, output) {
                     console.log('stop');
-                    // Clear previous envelope values
-                    this.vca.gain.cancelScheduledValues(this.ac.currentTime);
-                    // set osc gain to sustain value
-                    // this.vca.gain.setValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime);
-                    // RELEASE
-                    this.vca.gain.linearRampToValueAtTime(0, this.ac.currentTime + this.ENV.release);
-                    // Terminate after release
-                    window.setTimeout(function () {
-                        // Stop oscillator
-                        this.vca.gain.value = 0.0;
-                        if (this.osc) {
-                            this.osc.stop(0);
-                            this.osc.disconnect(this.vca);
-                            this.osc = null;
-                            this.vca.disconnect(output);
-                        }
-                        console.log('stop... for real');
-                    }.bind(this), this.ENV.release * 1000);
+                    var voice = this.voices[freq];
+                    if (voice) {
+                        var vca_1 = voice.vca;
+                        var osc_1 = voice.osc;
+                        // Clear previous envelope values
+                        vca_1.gain.cancelScheduledValues(this.ac.currentTime);
+                        // set osc gain to sustain value
+                        var gain = vca_1.gain.value;
+                        vca_1.gain.setValueAtTime(gain * this.ENV.sustain, this.ac.currentTime);
+                        // RELEASE
+                        vca_1.gain.linearRampToValueAtTime(0, this.ac.currentTime + this.ENV.release);
+                        // Terminate after release
+                        window.setTimeout(function () {
+                            // Stop oscillator
+                            vca_1.gain.value = 0.0;
+                            osc_1.stop(0);
+                            osc_1.disconnect(vca_1);
+                            osc_1 = null;
+                            vca_1.disconnect(output);
+                            console.log('stop... for real');
+                            delete this.voices[freq];
+                        }.bind(this), this.ENV.release * 1000);
+                    }
                 };
                 __decorate([
                     core_1.Input(), 

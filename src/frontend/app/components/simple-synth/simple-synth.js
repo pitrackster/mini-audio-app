@@ -28,7 +28,6 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
                 function SimpleSynth() {
                 }
                 SimpleSynth.prototype.ngOnInit = function () {
-                    this.notes = Array();
                     // create master output vca / gain
                     this.master = this.ac.createGain();
                     this.master.connect(this.ac.destination);
@@ -36,19 +35,18 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
                 SimpleSynth.prototype.ngAfterViewInit = function () { };
                 SimpleSynth.prototype.noteOn = function (note) {
                     console.log('simple synth play note called ' + note);
-                    console.log(this.notes);
                     var volume = 1 / this.oscComponents.toArray().length;
                     for (var _i = 0, _a = this.oscComponents.toArray(); _i < _a.length; _i++) {
                         var osc = _a[_i];
                         osc.start(note, volume, this.master);
                     }
                 };
-                SimpleSynth.prototype.noteOff = function () {
+                SimpleSynth.prototype.noteOff = function (freq) {
                     console.log('simple synth note off called ');
                     for (var _i = 0, _a = this.oscComponents.toArray(); _i < _a.length; _i++) {
                         var osc = _a[_i];
                         console.log('simple synth note off stop osc ');
-                        osc.stop(this.master);
+                        osc.stop(freq, this.master);
                     }
                 };
                 __decorate([

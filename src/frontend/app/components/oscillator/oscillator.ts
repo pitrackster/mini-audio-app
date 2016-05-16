@@ -16,10 +16,10 @@ export class Oscillator implements OnInit {
   //protected vca: GainNode; //osc output gain
   //protected osc: any; // osc node
   protected waveform: number; // osc waveform
-  //protected gain: number;
+  protected gain: number;
   protected detune:number;
 
-  protected notes:Array<any>;
+  protected voices:Array<any>;
 
   @Input() ac: AudioContext;
   @Input() id: string;
@@ -30,7 +30,7 @@ export class Oscillator implements OnInit {
     //this.gain = 1; // @TODO should be 1/nb osc-comp
     //this.osc = null;
     this.detune = 0;
-    this.notes = new Array<any>();
+    this.voices = new Array<any>();
   }
 
   getWaveformFromNumber(value) {
@@ -72,6 +72,7 @@ export class Oscillator implements OnInit {
     osc.start();
     // Silence oscillator gain
     vca.gain.setValueAtTime(0, this.ac.currentTime);
+
     // ATTACK
     vca.gain.linearRampToValueAtTime(volume, this.ac.currentTime + this.ENV.attack);
     // SUSTAIN
@@ -80,32 +81,36 @@ export class Oscillator implements OnInit {
     osc.connect(vca);
 
     let voice = {osc:osc, vca:vca};
-    this.notes[freq] = voice;
+    this.voices[freq] = voice;
   }
 
-  stop(output:GainNode) {
+  stop(freq, output:GainNode) {
 
     console.log('stop');
-    // Clear previous envelope values
-    this.vca.gain.cancelScheduledValues(this.ac.currentTime);
-    // set osc gain to sustain value
-    // this.vca.gain.setValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime);
-    // RELEASE
-    this.vca.gain.linearRampToValueAtTime(0, this.ac.currentTime + this.ENV.release);
-    // Terminate after release
-    window.setTimeout(function() {
-      // Stop oscillator
-      this.vca.gain.value = 0.0;
-      if(this.osc) {
-        this.osc.stop(0);
-        this.osc.disconnect(this.vca);
-        this.osc = null;
-        this.vca.disconnect(output);
-      }
+    let voice = this.voices[freq];
+    if(voice){
+      let vca = voice.vca;
+      let osc = voice.osc;
+      // Clear previous envelope values
+      vca.gain.cancelScheduledValues(this.ac.currentTime);
+      // set osc gain to sustain value
+      let gain = vca.gain.value;
+      vca.gain.setValueAtTime(gain * this.ENV.sustain, this.ac.currentTime);
+      // RELEASE
+      vca.gain.linearRampToValueAtTime(0, this.ac.currentTime + this.ENV.release);
+      // Terminate after release
+      window.setTimeout(function() {
+        // Stop oscillator
+        vca.gain.value = 0.0;
+        osc.stop(0);
+        osc.disconnect(vca);
+        osc = null;
+        vca.disconnect(output);
+        console.log('stop... for real');
+        delete this.voices[freq];
 
+      }.bind(this), this.ENV.release * 1000);
+    }
 
-      console.log('stop... for real');
-
-    }.bind(this), this.ENV.release * 1000);
   }
 }

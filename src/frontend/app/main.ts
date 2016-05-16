@@ -122,7 +122,7 @@ class Main {
   handleNoteOff($event){
     console.log('main noteoff');
     console.log($event);
-    this.synth.noteOff();
+    this.synth.noteOff($event.frequency);
   }
 
 

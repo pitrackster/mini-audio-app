@@ -122,7 +122,7 @@ System.register(['angular2/platform/browser', 'angular2/core', './components/sim
                 Main.prototype.handleNoteOff = function ($event) {
                     console.log('main noteoff');
                     console.log($event);
-                    this.synth.noteOff();
+                    this.synth.noteOff($event.frequency);
                 };
                 __decorate([
                     core_1.ViewChild(simple_synth_1.SimpleSynth), 
