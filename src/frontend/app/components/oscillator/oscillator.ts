@@ -86,7 +86,7 @@ export class Oscillator implements OnInit {
       let vca = voice.vca;
       let osc = voice.osc;
       // Clear previous envelope values
-      vca.gain.cancelScheduledValues(this.ac.currentTime);
+      //vca.gain.cancelScheduledValues(this.ac.currentTime);
       // set osc gain to sustain value
       let gain = vca.gain.value;
       vca.gain.setValueAtTime(gain * this.ENV.sustain, this.ac.currentTime);

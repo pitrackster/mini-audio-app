@@ -81,7 +81,7 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                         var vca_1 = voice.vca;
                         var osc_1 = voice.osc;
                         // Clear previous envelope values
-                        vca_1.gain.cancelScheduledValues(this.ac.currentTime);
+                        //vca.gain.cancelScheduledValues(this.ac.currentTime);
                         // set osc gain to sustain value
                         var gain = vca_1.gain.value;
                         vca_1.gain.setValueAtTime(gain * this.ENV.sustain, this.ac.currentTime);
