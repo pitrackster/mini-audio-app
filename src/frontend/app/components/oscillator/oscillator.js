@@ -26,8 +26,6 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                 }
                 Oscillator.prototype.ngOnInit = function () {
                     this.waveform = 2;
-                    //this.gain = 1; // @TODO should be 1/nb osc-comp
-                    //this.osc = null;
                     this.detune = 0;
                     this.voices = new Array();
                 };
@@ -49,11 +47,11 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                 };
                 Oscillator.prototype.updateWaveform = function ($event) {
                     console.log('update waveform');
-                    this.waveform = +this.waveform;
+                    this.waveform = $event.target.valueAsNumber;
                 };
                 Oscillator.prototype.updateTune = function ($event) {
                     console.log('update tune');
-                    this.detune = +this.detune;
+                    this.detune = $event.target.valueAsNumber;
                 };
                 Oscillator.prototype.start = function (freq, volume, output) {
                     console.log('start pressed');
@@ -99,6 +97,7 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                             vca_1.disconnect(output);
                             console.log('stop... for real');
                             delete this.voices[freq];
+                            vca_1 = null;
                         }.bind(this), this.ENV.release * 1000);
                     }
                 };

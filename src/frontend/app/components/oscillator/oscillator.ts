@@ -13,12 +13,9 @@ import {Envelope} from '../envelope/envelope';
 
 export class Oscillator implements OnInit {
 
-  //protected vca: GainNode; //osc output gain
-  //protected osc: any; // osc node
   protected waveform: number; // osc waveform
-  protected gain: number;
   protected detune:number;
-
+  // Multitimbral Synth => remember which notes are played by this component in order to stop the right ones when asked!
   protected voices:Array<any>;
 
   @Input() ac: AudioContext;
@@ -27,8 +24,6 @@ export class Oscillator implements OnInit {
 
   ngOnInit() {
     this.waveform = 2;
-    //this.gain = 1; // @TODO should be 1/nb osc-comp
-    //this.osc = null;
     this.detune = 0;
     this.voices = new Array<any>();
   }
@@ -52,12 +47,12 @@ export class Oscillator implements OnInit {
 
   updateWaveform($event) {
     console.log('update waveform');
-    this.waveform = +this.waveform;
+    this.waveform = $event.target.valueAsNumber;
   }
 
   updateTune($event){
     console.log('update tune');
-    this.detune = +this.detune;
+    this.detune = $event.target.valueAsNumber;
   }
 
   start(freq, volume, output:GainNode) {
@@ -72,7 +67,6 @@ export class Oscillator implements OnInit {
     osc.start();
     // Silence oscillator gain
     vca.gain.setValueAtTime(0, this.ac.currentTime);
-
     // ATTACK
     vca.gain.linearRampToValueAtTime(volume, this.ac.currentTime + this.ENV.attack);
     // SUSTAIN
@@ -108,7 +102,7 @@ export class Oscillator implements OnInit {
         vca.disconnect(output);
         console.log('stop... for real');
         delete this.voices[freq];
-
+        vca = null;
       }.bind(this), this.ENV.release * 1000);
     }
 

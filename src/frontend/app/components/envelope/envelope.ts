@@ -13,7 +13,7 @@ export class Envelope implements OnInit {
   public attack:number; // seconds
   public decay:number; // seconds after decay time sustain gain level will be applied
   public sustain:number; // gain value (0 <= value <= 1)
-  public release:number;
+  public release:number; // seconds
 
   ngOnInit() {
     this.attack = 0;
@@ -22,11 +22,19 @@ export class Envelope implements OnInit {
     this.release = 0;
   }
 
-  toNumber(){
-    this.attack = +this.attack;
-    this.decay = +this.decay;
-    this.sustain = +this.sustain;
-    this.release = +this.release;
+  updateAttack($event){
+    this.attack = $event.target.valueAsNumber;
+  }
+
+  updateDecay($event){
+    this.decay = $event.target.valueAsNumber;
+  }
+
+  updateSustain($event){
+    this.sustain = $event.target.valueAsNumber;
+  }
+  updateRelease($event){
+    this.release = $event.target.valueAsNumber;
   }
 
 }

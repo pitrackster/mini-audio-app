@@ -17,28 +17,34 @@ npm install && npm start
 
 ## Main idea
 
-Provide a minimalistic audio app with 4 virtual instruments, patterns, patterns bank, pattern editor and song mode
+- First steps with Electron / Angular2
+- In an hypothetic future, provide an open source multiplatform ***virtual studio app*** with HTML based virtual instruments, controllers / components such as patterns, patterns bank, pattern editor, song mode, visual automation...
 
+
+### Instruments
 - 2 OSC synth
 - Sample based DrumMachine
 - 1 MonoSynth (TB303 like)
 - Sampler (soundfont reader ? is that possible ?)
 
+All instruments should :
 
-### 2 OSC Synth
+- receive MIDI messages (such as channel, note-on note-off, volume ...)
+- have the ability to handles "patchs"
 
-- should receive a MIDI channel and MIDI messages (such as note-on note-off, volume ...)
-- once this messages are received should play the right note with all MIDI infos
-- ability to handles "patchs"
-- components :
-    - OSC
-    - ENV
-    - LFO
-    - MIXER
-    - FILTER
-    - DELAY
-    - REV
-    - DISTORTION
-    - ...
 
-> see [this](https://github.com/BarakChamo/rc455/blob/master/app/controllers/Audio.js) and [that](https://github.com/BarakChamo/rc455/blob/master/app/controllers/Voice.js)
+### Components
+
+- OSC
+- ENV
+- LFO
+- MIXER
+- FILTER
+- DELAY
+- REV
+- DISTORTION
+- KEYBOARD
+- PATTERN SEQ
+- ...
+
+> for inspiration see [this](https://github.com/BarakChamo/rc455/)

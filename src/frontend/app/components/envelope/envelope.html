@@ -17,16 +17,16 @@
         <hr>
         <div class="row">
             <div class="col-md-3 text-center">
-                <input type="range" (change)="toNumber()" [(ngModel)]="attack" title="Attack" class="vertical-slider-sm" step="1" min="0" max="10">
+                <input type="range" (change)="updateAttack($event)" [(ngModel)]="attack" title="Attack" class="vertical-slider-sm" step="1" min="0" max="10">
             </div>
             <div class="col-md-3 text-center">
-                <input type="range" (change)="toNumber()" [(ngModel)]="decay" title="Decay {{decay}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="5">
+                <input type="range" (change)="updateDecay($event)" [(ngModel)]="decay" title="Decay {{decay}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="5">
             </div>
             <div class="col-md-3 text-center">
-                <input type="range" (change)="toNumber()" [(ngModel)]="sustain" title="Sustain {{sustain}} (gain)" class="vertical-slider-sm" step="0.1" min="0" max="1">
+                <input type="range" (change)="updateSustain($event)" [(ngModel)]="sustain" title="Sustain {{sustain}} (gain)" class="vertical-slider-sm" step="0.1" min="0" max="1">
             </div>
             <div class="col-md-3 text-center">
-                <input type="range" (change)="toNumber()" [(ngModel)]="release" title="Release {{release}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="15">
+                <input type="range" (change)="updateRelease($event)" [(ngModel)]="release" title="Release {{release}} (seconds)" class="vertical-slider-sm" step="1" min="0" max="15">
             </div>
         </div>
         <hr>
@@ -35,14 +35,13 @@
                 {{attack}}
             </div>
             <div class="col-md-3 text-center">
-                  {{decay}}
+                {{decay}}
             </div>
             <div class="col-md-3 text-center">
-                  {{sustain}}
+                {{sustain}}
             </div>
             <div class="col-md-3 text-center">
                 {{release}}
             </div>
         </div>
     </div>
-</div>
