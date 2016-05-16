@@ -26,9 +26,10 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                 }
                 Oscillator.prototype.ngOnInit = function () {
                     this.waveform = 2;
-                    this.gain = 1; // @TODO should be 1/nb osc-comp
-                    this.osc = null;
+                    //this.gain = 1; // @TODO should be 1/nb osc-comp
+                    //this.osc = null;
                     this.detune = 0;
+                    this.notes = new Array();
                 };
                 Oscillator.prototype.getWaveformFromNumber = function (value) {
                     switch (value) {
@@ -50,32 +51,30 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                     console.log('update waveform');
                     this.waveform = +this.waveform;
                 };
-                Oscillator.prototype.updateVolume = function ($event) {
-                    console.log('update volume');
-                    this.gain = +this.gain;
-                };
                 Oscillator.prototype.updateTune = function ($event) {
                     console.log('update tune');
                     this.detune = +this.detune;
                 };
-                Oscillator.prototype.start = function (freq, output) {
+                Oscillator.prototype.start = function (freq, volume, output) {
                     console.log('start pressed');
                     // create a new oscillator
-                    this.osc = this.ac.createOscillator();
-                    this.vca = this.ac.createGain();
-                    this.vca.connect(output);
-                    this.osc.frequency.value = freq;
-                    this.osc.type = this.getWaveformFromNumber(this.waveform);
-                    this.osc.detune.value = this.detune;
-                    this.osc.start();
+                    var osc = this.ac.createOscillator();
+                    var vca = this.ac.createGain();
+                    vca.connect(output);
+                    osc.frequency.value = freq;
+                    osc.type = this.getWaveformFromNumber(this.waveform);
+                    osc.detune.value = this.detune;
+                    osc.start();
                     // Silence oscillator gain
-                    this.vca.gain.setValueAtTime(0, this.ac.currentTime);
+                    vca.gain.setValueAtTime(0, this.ac.currentTime);
                     // ATTACK
-                    this.vca.gain.linearRampToValueAtTime(this.gain, this.ac.currentTime + this.ENV.attack);
+                    vca.gain.linearRampToValueAtTime(volume, this.ac.currentTime + this.ENV.attack);
                     // SUSTAIN
-                    this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
+                    vca.gain.linearRampToValueAtTime(volume * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
                     // connect
-                    this.osc.connect(this.vca);
+                    osc.connect(vca);
+                    var voice = { osc: osc, vca: vca };
+                    this.notes[freq] = voice;
                 };
                 Oscillator.prototype.stop = function (output) {
                     console.log('stop');

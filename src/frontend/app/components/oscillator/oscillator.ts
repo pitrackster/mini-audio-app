@@ -13,11 +13,13 @@ import {Envelope} from '../envelope/envelope';
 
 export class Oscillator implements OnInit {
 
-  protected vca: GainNode; //osc output gain
-  protected osc: any; // osc node
+  //protected vca: GainNode; //osc output gain
+  //protected osc: any; // osc node
   protected waveform: number; // osc waveform
-  protected gain: number;
+  //protected gain: number;
   protected detune:number;
+
+  protected notes:Array<any>;
 
   @Input() ac: AudioContext;
   @Input() id: string;
@@ -25,9 +27,10 @@ export class Oscillator implements OnInit {
 
   ngOnInit() {
     this.waveform = 2;
-    this.gain = 1; // @TODO should be 1/nb osc-comp
-    this.osc = null;
+    //this.gain = 1; // @TODO should be 1/nb osc-comp
+    //this.osc = null;
     this.detune = 0;
+    this.notes = new Array<any>();
   }
 
   getWaveformFromNumber(value) {
@@ -52,34 +55,32 @@ export class Oscillator implements OnInit {
     this.waveform = +this.waveform;
   }
 
-  updateVolume($event) {
-    console.log('update volume');
-    this.gain = +this.gain;
-  }
-
   updateTune($event){
     console.log('update tune');
     this.detune = +this.detune;
   }
 
-  start(freq, output:GainNode) {
+  start(freq, volume, output:GainNode) {
     console.log('start pressed');
     // create a new oscillator
-    this.osc = this.ac.createOscillator();
-    this.vca = this.ac.createGain();
-    this.vca.connect(output);
-    this.osc.frequency.value = freq;
-    this.osc.type = this.getWaveformFromNumber(this.waveform);
-    this.osc.detune.value = this.detune;
-    this.osc.start();
+    let osc = this.ac.createOscillator();
+    let vca = this.ac.createGain();
+    vca.connect(output);
+    osc.frequency.value = freq;
+    osc.type = this.getWaveformFromNumber(this.waveform);
+    osc.detune.value = this.detune;
+    osc.start();
     // Silence oscillator gain
-    this.vca.gain.setValueAtTime(0, this.ac.currentTime);
+    vca.gain.setValueAtTime(0, this.ac.currentTime);
     // ATTACK
-    this.vca.gain.linearRampToValueAtTime(this.gain, this.ac.currentTime + this.ENV.attack);
+    vca.gain.linearRampToValueAtTime(volume, this.ac.currentTime + this.ENV.attack);
     // SUSTAIN
-    this.vca.gain.linearRampToValueAtTime(this.gain * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
+    vca.gain.linearRampToValueAtTime(volume * this.ENV.sustain, this.ac.currentTime + this.ENV.attack + this.ENV.decay);
     // connect
-    this.osc.connect(this.vca);
+    osc.connect(vca);
+
+    let voice = {osc:osc, vca:vca};
+    this.notes[freq] = voice;
   }
 
   stop(output:GainNode) {

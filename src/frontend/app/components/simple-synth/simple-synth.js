@@ -37,9 +37,10 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
                 SimpleSynth.prototype.noteOn = function (note) {
                     console.log('simple synth play note called ' + note);
                     console.log(this.notes);
+                    var volume = 1 / this.oscComponents.toArray().length;
                     for (var _i = 0, _a = this.oscComponents.toArray(); _i < _a.length; _i++) {
                         var osc = _a[_i];
-                        osc.start(note, this.master);
+                        osc.start(note, volume, this.master);
                     }
                 };
                 SimpleSynth.prototype.noteOff = function () {

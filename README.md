@@ -1,6 +1,6 @@
 # mini-audio-app
 
-Uses 
+Uses
 - Electron
 - WebAudio API
 - Angular2
@@ -27,10 +27,9 @@ Provide a minimalistic audio app with 4 virtual instruments, patterns, patterns 
 
 ### 2 OSC Synth
 
-- should receive a MIDI channel and informations (such as note-on note-off, volume ...)
-- once this message is received should play the right note with all MIDI infos
+- should receive a MIDI channel and MIDI messages (such as note-on note-off, volume ...)
+- once this messages are received should play the right note with all MIDI infos
 - ability to handles "patchs"
-- each OSC has it's own (amp) ENV ? Or one ENV for all ?
 - components :
     - OSC
     - ENV
@@ -41,6 +40,5 @@ Provide a minimalistic audio app with 4 virtual instruments, patterns, patterns 
     - REV
     - DISTORTION
     - ...
-    
-> [see](https://github.com/BarakChamo/rc455/blob/master/app/controllers/Audio.js https://github.com/BarakChamo/rc455/blob/master/app/controllers/Voice.js)
 
+> see [this](https://github.com/BarakChamo/rc455/blob/master/app/controllers/Audio.js) and [that](https://github.com/BarakChamo/rc455/blob/master/app/controllers/Voice.js)

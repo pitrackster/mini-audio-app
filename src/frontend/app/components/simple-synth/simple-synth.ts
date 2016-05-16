@@ -36,8 +36,9 @@ export class SimpleSynth implements OnInit {
   noteOn(note: any) {
     console.log('simple synth play note called ' + note);
     console.log(this.notes);
+    let volume = 1 / this.oscComponents.toArray().length;
     for (let osc of this.oscComponents.toArray()) {
-      osc.start(note, this.master);
+      osc.start(note, volume, this.master);
     }
   }
 
@@ -49,7 +50,7 @@ export class SimpleSynth implements OnInit {
     }
   }
 
-  
+
 
 
 }
