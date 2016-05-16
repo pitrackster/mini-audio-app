@@ -41,7 +41,7 @@ export class Keyboard implements OnInit {
         this.notes = [];
         this.keysDown = [];
         this.keys = [
-            new Note('C1', 32.7032, 'key-white', 81),
+            /*new Note('C1', 32.7032, 'key-white', 81),
             new Note('C#1', 34.6478, 'key-black', 90),
             new Note('D1', 36.7081, 'key-white', 83),
             new Note('D#1', 38.8909, 'key-black', 69),
@@ -53,7 +53,7 @@ export class Keyboard implements OnInit {
             new Note('A1', 55.0000, 'key-white', 72),
             new Note('A#1', 58.2705, 'key-black', 85),
             new Note('B1', 61.7354, 'key-white', 74)
-            /*{'name':'C1', 'frequency':32.7032, 'class':'key-white'},
+            {'name':'C1', 'frequency':32.7032, 'class':'key-white'},
             {'name':'C#1', 'frequency':34.6478, 'class':'key-black'},
             {'name':'D1', 'frequency':36.7081, 'class':'key-white'},
             {'name':'D#1', 'frequency':38.8909, 'class':'key-black'},
@@ -65,7 +65,23 @@ export class Keyboard implements OnInit {
             {'name':'A1', 'frequency':55.0000, 'class':'key-white'},
             {'name':'A#1', 'frequency':58.2705, 'class':'key-black'},
             {'name':'B1', 'frequency':61.7354, 'class':'key-white'},*/
+
+            new Note('C4', 32.7032*4, 'key-white', 81),
+                new Note('C#4', 34.6478*4, 'key-black', 90),
+                new Note('D4', 36.7081*4, 'key-white', 83),
+                new Note('D#4', 38.8909*4, 'key-black', 69),
+                new Note('E4', 41.2034*4, 'key-white', 68),
+                new Note('F4', 43.6535*4, 'key-white', 70),
+                new Note('F#4', 46.2493*4, 'key-black', 84),
+                new Note('G4', 48.9994*4, 'key-white', 71),
+                new Note('G#4', 51.9131*4, 'key-black', 89),
+                new Note('A4', 55.0000*4, 'key-white', 72),
+                new Note('A#4', 58.2705*4, 'key-black', 85),
+                new Note('B4', 61.7354*4, 'key-white', 74)
         ];
+
+
+
     }
 
     ngOnInit() {
@@ -93,34 +109,27 @@ export class Keyboard implements OnInit {
 
     */
     handleKeyDown($event) {
-        console.log('key down');
-        console.log($event, $event.repeat, $event.keyCode, $event.keyIdentifier);
+
         if ($event.keyCode in this.keysDown) {
-           return;
+            return;
         }
 
-       this.keysDown[$event.keyCode] = true;
-       let note = this.findNoteFromKeyCode($event.keyCode);
-       //if(note) this.noteOn.next(note);
-      /*  if(!$event.repeat){
-          let note = this.findNoteFromKeyCode($event.keyCode);
-          console.log(note);
-          if(note) this.noteOn.next(note);
-        }*/
+        if (!$event.repeat) {
+            this.keysDown[$event.keyCode] = true;
+            let note = this.findNoteFromKeyCode($event.keyCode);
+            if (note) this.noteOn.next(note);
+        }
     }
 
     handleKeyUp($event) {
-        console.log('key up');
-        //console.log($event,  $event.repeat, $event.keyCode, $event.keyIdentifier);
-        delete this.keysDown[$event.keyCode];
         let note = this.findNoteFromKeyCode($event.keyCode);
-        //if(note) this.noteOff.next(note);
+        if (note) this.noteOff.next(note);
+        delete this.keysDown[$event.keyCode];
     }
 
-    findNoteFromKeyCode(keyCode):Note{
-      let note = this.keys.find(e => e.keyCode === keyCode);
-      //console.log(note);
-      return note;
+    findNoteFromKeyCode(keyCode): Note {
+        let note = this.keys.find(e => e.keyCode === keyCode);
+        return note;
     }
 
 
