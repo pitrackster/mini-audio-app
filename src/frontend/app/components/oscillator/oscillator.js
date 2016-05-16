@@ -83,8 +83,8 @@ System.register(['angular2/core', '../envelope/envelope'], function(exports_1, c
                         // Clear previous envelope values
                         //vca.gain.cancelScheduledValues(this.ac.currentTime);
                         // set osc gain to sustain value
-                        var gain = vca_1.gain.value;
-                        vca_1.gain.setValueAtTime(gain * this.ENV.sustain, this.ac.currentTime);
+                        //let gain = vca.gain.value;
+                        //vca.gain.setValueAtTime(gain * this.ENV.sustain, this.ac.currentTime);
                         // RELEASE
                         vca_1.gain.linearRampToValueAtTime(0, this.ac.currentTime + this.ENV.release);
                         // Terminate after release

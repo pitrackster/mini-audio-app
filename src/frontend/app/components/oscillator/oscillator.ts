@@ -88,8 +88,8 @@ export class Oscillator implements OnInit {
       // Clear previous envelope values
       //vca.gain.cancelScheduledValues(this.ac.currentTime);
       // set osc gain to sustain value
-      let gain = vca.gain.value;
-      vca.gain.setValueAtTime(gain * this.ENV.sustain, this.ac.currentTime);
+      //let gain = vca.gain.value;
+      //vca.gain.setValueAtTime(gain * this.ENV.sustain, this.ac.currentTime);
       // RELEASE
       vca.gain.linearRampToValueAtTime(0, this.ac.currentTime + this.ENV.release);
       // Terminate after release
