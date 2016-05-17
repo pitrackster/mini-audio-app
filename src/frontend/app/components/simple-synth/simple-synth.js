@@ -31,6 +31,7 @@ System.register(['angular2/core', '../oscillator/oscillator', '../keyboard/keybo
                     // create master output vca / gain
                     this.master = this.ac.createGain();
                     this.master.connect(this.ac.destination);
+                    this.master.gain.value = 1;
                 };
                 SimpleSynth.prototype.ngAfterViewInit = function () { };
                 SimpleSynth.prototype.noteOn = function (note) {

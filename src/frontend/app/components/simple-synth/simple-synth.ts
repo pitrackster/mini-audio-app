@@ -27,6 +27,7 @@ export class SimpleSynth implements OnInit {
     // create master output vca / gain
     this.master = this.ac.createGain();
     this.master.connect(this.ac.destination);
+    this.master.gain.value = 1;
   }
 
   ngAfterViewInit() {}

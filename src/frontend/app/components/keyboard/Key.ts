@@ -1,7 +1,7 @@
 
 
 
-export class Note{
+export class Key{
 
   public frequency:number;
   public name:string;

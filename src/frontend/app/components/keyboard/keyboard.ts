@@ -1,6 +1,6 @@
 import {bootstrap}    from 'angular2/platform/browser';
 import {Component, Input, OnInit, Output, EventEmitter} from 'angular2/core';
-import {Note} from './models/Note';
+import {Key} from './Key';
 
 @Component({
     selector: 'keyboard-comp',
@@ -13,8 +13,7 @@ import {Note} from './models/Note';
 
 export class Keyboard implements OnInit {
 
-    protected keys: Array<Note>;
-    protected notes: Array<Note>;
+    protected keys: Array<Key>;
     protected keysDown:Array<boolean>;
 
     @Output() noteOn: EventEmitter<any> = new EventEmitter();
@@ -38,7 +37,6 @@ export class Keyboard implements OnInit {
     'j' : 74 => B
     */
     constructor() {
-        this.notes = [];
         this.keysDown = [];
         this.keys = [
             /*new Note('C1', 32.7032, 'key-white', 81),
@@ -66,18 +64,18 @@ export class Keyboard implements OnInit {
             {'name':'A#1', 'frequency':58.2705, 'class':'key-black'},
             {'name':'B1', 'frequency':61.7354, 'class':'key-white'},*/
 
-            new Note('C4', 32.7032*4, 'key-white', 81),
-                new Note('C#4', 34.6478*4, 'key-black', 90),
-                new Note('D4', 36.7081*4, 'key-white', 83),
-                new Note('D#4', 38.8909*4, 'key-black', 69),
-                new Note('E4', 41.2034*4, 'key-white', 68),
-                new Note('F4', 43.6535*4, 'key-white', 70),
-                new Note('F#4', 46.2493*4, 'key-black', 84),
-                new Note('G4', 48.9994*4, 'key-white', 71),
-                new Note('G#4', 51.9131*4, 'key-black', 89),
-                new Note('A4', 55.0000*4, 'key-white', 72),
-                new Note('A#4', 58.2705*4, 'key-black', 85),
-                new Note('B4', 61.7354*4, 'key-white', 74)
+            new Key('C4', 32.7032*4, 'key-white', 81),
+                new Key('C#4', 34.6478*4, 'key-black', 90),
+                new Key('D4', 36.7081*4, 'key-white', 83),
+                new Key('D#4', 38.8909*4, 'key-black', 69),
+                new Key('E4', 41.2034*4, 'key-white', 68),
+                new Key('F4', 43.6535*4, 'key-white', 70),
+                new Key('F#4', 46.2493*4, 'key-black', 84),
+                new Key('G4', 48.9994*4, 'key-white', 71),
+                new Key('G#4', 51.9131*4, 'key-black', 89),
+                new Key('A4', 55.0000*4, 'key-white', 72),
+                new Key('A#4', 58.2705*4, 'key-black', 85),
+                new Key('B4', 61.7354*4, 'key-white', 74)
         ];
 
 
@@ -87,15 +85,15 @@ export class Keyboard implements OnInit {
     ngOnInit() {
     }
 
-    emitNoteOn(note: Note) {
+    emitNoteOn(key: Key) {
         console.log('note on');
-        console.log(note);
-        this.noteOn.next(note);
+        console.log(key);
+        this.noteOn.next(key);
     }
 
-    emitNoteOff(note: Note) {
+    emitNoteOff(key: Key) {
         console.log('note off');
-        this.noteOff.next(note);
+        this.noteOff.next(key);
     }
 
     /**
@@ -116,20 +114,20 @@ export class Keyboard implements OnInit {
 
         if (!$event.repeat) {
             this.keysDown[$event.keyCode] = true;
-            let note = this.findNoteFromKeyCode($event.keyCode);
-            if (note) this.noteOn.next(note);
+            let key = this.findNoteFromKeyCode($event.keyCode);
+            if (key) this.noteOn.next(key);
         }
     }
 
     handleKeyUp($event) {
-        let note = this.findNoteFromKeyCode($event.keyCode);
-        if (note) this.noteOff.next(note);
+        let key = this.findNoteFromKeyCode($event.keyCode);
+        if (key) this.noteOff.next(key);
         delete this.keysDown[$event.keyCode];
     }
 
-    findNoteFromKeyCode(keyCode): Note {
-        let note = this.keys.find(e => e.keyCode === keyCode);
-        return note;
+    findNoteFromKeyCode(keyCode): Key {
+        let key = this.keys.find(e => e.keyCode === keyCode);
+        return key;
     }
 
 
